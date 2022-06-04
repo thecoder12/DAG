@@ -1,0 +1,36 @@
+Problem statement:
+Implementation of Direct Acyclic Graph with real usecase of files inter-linked using revision & down-revision keywords in each py files.
+https://alembic.sqlalchemy.org/en/latest/tutorial.html#create-a-migration-script
+
+● revision
+  ○ Tells current python file’s revision number, would be referred to in some other python file in down_revision parameter to establish the link.
+● down_revision
+  ○ Tells revision of previous file which needs to be executed before current file
+  ○ None down revision of a file tells it should get applied first while applying migrations
+
+
+Now we need to develop a parser which can parse all the files in any given path and create the sequence in which we need to apply the migrations.
+
+
+Let’s assume we have below files in the given package
+1. file1.py
+  a. Revision -> a
+  b. Down Revision -> None
+2. file2.py
+  a. Revision -> b
+  b. Down Revision -> a
+3. file3.py
+  a. Revision -> d
+  b. Down Revision -> c
+4. file4.py
+  a. Revision -> c
+  b. Down Revision -> b
+Output of your parser for given package should be **************************************************************************************
+Migration files would be applied in below sequence
+a(file1.py) -> b(file2.py) -> c(file4.py) -> d(file3.py) **************************************************************************************
+
+Program Output:
+Code$ python3 DAG.py 
+Migration files would be applied in below sequence 
+1de5a8c20056(1de5a8c20056_initial_migration_include.py) -> 6dd757e58240(6dd757e58240_user_group_migrations_addition_include.py) -> 6bbb0ed8668e(6bbb0ed8668e_add_unique_id_in_integrations_include.py) -> 529d6f7221aa(529d6f7221aa_integrations_column_changes_include.py) -> c28d9110572d(c28d9110572d_integrations_unique_identifier_name_include.py) -> bffbe44bfbc2(bffbe44bfbc2_client_configuration_col_include.py) -> fa137ca2e4f4(fa137ca2e4f4_column_remane_to_name_include.py) -> c5bd1ade54d7(c5bd1ade54d7_rename_vendor_configuration_include.py)
+Non visited File/s ::['aloof_file.py', 'FOMO.py']
